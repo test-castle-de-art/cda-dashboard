@@ -1,0 +1,35 @@
+services:
+  cda-dashboard-app:
+    image: cda-dashboard-app
+    container_name: cda-dashboard-app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    user: "${UID:-1000}:${GID:-1000}"
+    working_dir: /cda-dashboard-app
+    volumes:
+      - .:/cda-dashboard-app
+    ports:
+      - "5173:5173"
+    command: tail -f /dev/null
+
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://cda_user:cda_password@cda-dashboard-db:5432/cda_dashboard
+
+  cda-dashboard-db:
+    image: postgres:16-alpine
+    container_name: cda-dashboard-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cda_dashboard
+      POSTGRES_USER: cda_user
+      POSTGRES_PASSWORD: cda_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - cda_dashboard_db_data:/var/lib/postgresql/data
+
+volumes:
+  cda_dashboard_db_data:

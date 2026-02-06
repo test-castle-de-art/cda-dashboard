@@ -13,7 +13,7 @@ export async function projectRoutes(app: FastifyInstance)
     app.get("/api/projects", { preHandler: [app.authenticate] }, async (request, reply) =>
     {
         const allProjects = await db.select().from(projects);
-        reply.send(allProjects);
+        return reply.send(allProjects);
     });
 
     app.post("/api/projects", { preHandler: [app.authenticate] }, async (request, reply) =>

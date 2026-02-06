@@ -26,12 +26,12 @@ export const projects = pgTable("projects", {
 
 export const workLogs = pgTable("work_logs", {
     id: uuid("id").primaryKey().defaultRandom(),
-    userid: uuid("user_id").notNull()
+    userId: uuid("user_id").notNull()
         .references(() => users.id, { onDelete: "cascade"}),
     projectId: uuid("project_id").notNull()
         .references(() => projects.id, {onDelete: "restrict"}),
-    workDate: date("work_date").notNull(),
     hours: numeric("hours", { precision: 4, scale: 2}).notNull(),
+    workDate: date("work_date").notNull(),
     notes: text("notes"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()

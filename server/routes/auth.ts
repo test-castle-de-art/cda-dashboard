@@ -4,21 +4,7 @@ import argon2 from "argon2";
 import { eq } from "drizzle-orm";
 import { db } from "../db/index";
 import { users } from "../db/schema";
-
-const loginSchema = z.object({
-    username: z.string()
-        .min(3)
-        .max(50)
-        .regex(/^[a-zA-Z0-9_-]+$/, "Only letters, numbers, underscore, hyphen"),
-    password: z.string()
-        .min(8)
-        .max(128)
-        .regex(/^\S+$/, "Password cannot contain spaces")
-        .regex(/[A-Z]/, "Must contain uppercase letter")
-        .regex(/[a-z]/, "Must contain lowercase letter")
-        .regex(/[0-9]/, "Must contain number")
-        .regex(/[!@#$%^&*]/, "Must contain special character")
-});
+import { loginSchema } from "../../shared/zodSchemas";
 
 export async function authRoutes(app: FastifyInstance)
 {
