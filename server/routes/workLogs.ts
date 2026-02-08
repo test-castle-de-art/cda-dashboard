@@ -50,7 +50,7 @@ export async function workLogsRoutes(app: FastifyInstance)
             });
         }
 
-        const { userId, projectId, hours, workDate, notes } = parsed.data;
+        const { userId, projectId, workDate, hours, notes } = parsed.data;
 
         const [userExists] = await db
             .select({ id: users.id })

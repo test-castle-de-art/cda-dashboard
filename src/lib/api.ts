@@ -1,10 +1,12 @@
 import { useState } from "react";
+import type { User } from "../context/auth";
 
 const API_URL = "http://localhost:3000";
 
 interface LoginResponse
 {
     token: string;
+    user: User
 }
 
 interface ErrorResponse

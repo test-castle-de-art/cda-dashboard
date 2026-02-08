@@ -32,9 +32,13 @@ export function LoginPage() {
 				setErrors(fieldErrors as FieldErrors);
 				return ;
 			}
-
+			
 			const response = await loginUser(formData.username, formData.password);
-			login(response.token);
+			login(response.token, {
+				id: response.user.id,
+				username: response.user.username,
+				isAdmin: response.user.isAdmin
+			});
 		}
 		catch (error)
 		{
@@ -85,7 +89,8 @@ export function LoginPage() {
 								onChange={handleChange}
 								placeholder="Enter username"
 								disabled={isLoading}
-								className="w-full px-4 py-2 bg-gradient-to-br from-black to-gray-600 border border-gray-500 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+								autoComplete="username"
+								className="w-full px-4 py-2 text-gray-500 bg-gradient-to-br from-black to-gray-600 border border-gray-500 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
 							/>
 							{errors.username && (
 								<p className="text-red-600 text-sm mt-1">{errors.username[0]}</p>
@@ -104,7 +109,8 @@ export function LoginPage() {
 								onChange={handleChange}
 								placeholder="Enter password"
 								disabled={isLoading}
-								className="w-full px-4 py-2 bg-gradient-to-br from-black to-gray-600 border border-gray-500 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+								autoComplete="current-password"
+								className="w-full px-4 py-2 text-gray-500 bg-gradient-to-br from-black to-gray-600 border border-gray-500 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
 							/>
 							{errors.password && (
 								<p className="text-red-600 text-sm mt-1">{errors.password[0]}</p>

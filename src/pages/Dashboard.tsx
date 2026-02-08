@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useApiClient } from "../lib/api";
+import { useAuthContext } from "../context/auth";
 
 interface Project
 {
@@ -10,7 +11,7 @@ interface Project
 interface WorkLog
 {
 	id: string;
-	userId: string;
+	username: string;
 	projectId: string;
 	workDate: string;
 	hours: number;
@@ -21,12 +22,14 @@ interface WorkLog
 
 export function Dashboard()
 {
+	const { user } = useAuthContext();
 	const client = useApiClient();
 	const [isLoading, setIsLoading] = useState(false);
 	const [workLogs, setWorkLogs] = useState<WorkLog[]>([]);
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [error, setError] = useState<string>("");
 	const [formData, setFormData] = useState({
+		userId: "",
 		projectId: "",
 		workDate: new Date().toISOString().split("T")[0],
 		hours: "",
@@ -35,14 +38,16 @@ export function Dashboard()
 	
 	useEffect(() =>
 	{
-		const testProject: Project = {id: "123", name: "test"}
-		const testProjects: Project[] = [];
-		testProjects.push(testProject);
-		setProjects(testProjects);
-		const testLogs: WorkLog[] = [];
-		const testEntry: WorkLog = {id: "1", userId: "1", projectId: "1", workDate: "1", hours: 1, notes: null, project: testProject };
-		testLogs.push(testEntry);
-		setWorkLogs(testLogs);
+		// const testProject: Project = {id: "123", name: "test"}
+		// const testProjects: Project[] = [];
+		// testProjects.push(testProject);
+		// setProjects(testProjects);
+		// const testLogs: WorkLog[] = [];
+		// const testEntry: WorkLog = {id: "1", username: "cda", projectId: "1", workDate: "1", hours: 1, notes: null, project: testProject };
+		// testLogs.push(testEntry);
+		// setWorkLogs(testLogs);
+
+		fetchData();
 	}, []);
 
 	const fetchData = async () =>
@@ -68,9 +73,37 @@ export function Dashboard()
 		}
 	};
 
-	const handleAddWorkLog = async () =>
+	const handleAddWorkLog = async (e: React.SyntheticEvent<HTMLFormElement>) =>
 	{
+		e.preventDefault();
+		if (!formData.projectId || !formData.hours || !formData.workDate)
+		{
+			setError("Please fill in all required fields");
+			return ;
+		}
 
+		try
+		{
+			await client.post("/api/workLogs", {
+				userId: user!.id,
+				projectId: formData.projectId,
+				workDate:  formData.workDate,
+				hours: parseFloat(formData.hours),
+				notes: formData.notes || null
+			});
+			setFormData({
+				userId: "",
+				projectId: "",
+				workDate: new Date().toISOString().split("T")[0],
+				hours: "",
+				notes: ""
+			});
+			await fetchData();
+		}
+		catch (err)
+		{
+			setError(err instanceof Error ? err.message : "Failed to add work log");
+		}
 	};
 
 	const handleDeleteWorkLog = async (id: string) =>
@@ -111,20 +144,21 @@ export function Dashboard()
 							<table className="w-full text-left text-md sm:text-lg md:text-lg lg:text-xl">
 								<thead className="border-b border-gray-500">
 									<tr>
-										<th className="pb-2 font-semibold text-gray-500">Date</th>
 										<th className="pb-2 font-semibold text-gray-500">Project</th>
+										<th className="pb-2 font-semibold text-gray-500">User</th>
 										<th className="pb-2 font-semibold text-gray-500">Hours</th>
 										<th className="pb-2 font-semibold text-gray-500">Notes</th>
-										<th className="pb-2 font-semibold text-gray-500">Action</th>
+										<th className="pb-2 font-semibold text-gray-500">Date</th>
 									</tr>
 								</thead>
 								<tbody>
 									{workLogs.map((log) => (
 										<tr key={log.id} className="border-b border-gray-600 hover:border-gray-500">
-											<td className="py-3">{log.workDate}</td>
 											<td className="py-3">{log.project?.name || "[Missing project name]"}</td>
+											<td className="py-3">{log.username}</td>
 											<td className="py-3">{log.hours}h</td>
 											<td className="py-3">{log.notes || "-"}</td>
+											<td className="py-3">{log.workDate}</td>
 											<td className="py-3">
 												<button
 													onClick={() => handleDeleteWorkLog(log.id)}
