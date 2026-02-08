@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { z } from "zod";
 
 const API_URL = "http://localhost:3000";
 

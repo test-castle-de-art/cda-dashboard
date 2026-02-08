@@ -29,3 +29,8 @@ Dockerfile
 .env.local
 .env.*.local
 server/db/seed.ts
+
+# TypeScript build cache
+tsconfig.server.tsbuildinfo
+tsconfig.json.tsbuildinfo
+*.tsbuildinfo

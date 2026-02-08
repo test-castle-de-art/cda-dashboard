@@ -25,10 +25,10 @@ async function seed() {
         console.log("🌱 Seeding database with admin users...");
 
         for (const adminUser of adminUsers) {
-            const passwordHash = await argon2.hash(adminUser.password);
+            const passwordHashed = await argon2.hash(adminUser.password);
             await db.insert(users).values({
                 username: adminUser.username,
-                passwordHash,
+                passwordHashed: passwordHashed,
                 isAdmin: true
             });
             console.log(`✅ Created user: ${adminUser.username}`);
