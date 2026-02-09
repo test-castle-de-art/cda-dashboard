@@ -9,7 +9,7 @@ const createWorkLogsSchema = z.object({
     projectId: z.uuid(),
     workDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     hours: z.number().min(0.25).max(24),
-    notes: z.string().max(500).optional()
+    notes: z.string().max(500).optional().nullable()
 });
 
 export async function workLogsRoutes(app: FastifyInstance)
@@ -87,7 +87,7 @@ export async function workLogsRoutes(app: FastifyInstance)
         }
 
         const paramsSchema = z.object({ id: z.uuid() });
-        const parsed = paramsSchema.safeParse(request.body);
+        const parsed = paramsSchema.safeParse(request.params);
         if (!parsed.success)
         {
            return reply.code(400).send({

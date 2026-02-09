@@ -13,6 +13,7 @@ interface WorkLog
 	id: string;
 	username: string;
 	projectId: string;
+	projectName: string;
 	workDate: string;
 	hours: number;
 	notes: string | null;
@@ -31,6 +32,7 @@ export function Dashboard()
 	const [formData, setFormData] = useState({
 		userId: "",
 		projectId: "",
+		projectName: "",
 		workDate: new Date().toISOString().split("T")[0],
 		hours: "",
 		notes: ""
@@ -72,21 +74,22 @@ export function Dashboard()
 			setIsLoading(false);
 		}
 	};
-
+	
 	const handleAddWorkLog = async (e: React.SyntheticEvent<HTMLFormElement>) =>
-	{
-		e.preventDefault();
-		if (!formData.projectId || !formData.hours || !formData.workDate)
 		{
-			setError("Please fill in all required fields");
-			return ;
-		}
-
-		try
+			e.preventDefault();
+			if (!formData.projectName || !formData.hours || !formData.workDate)
+				{
+					setError("Please fill in all required fields");
+					return ;
+				}
+				
+				try
 		{
 			await client.post("/api/workLogs", {
 				userId: user!.id,
 				projectId: formData.projectId,
+				projectName: formData.projectName,
 				workDate:  formData.workDate,
 				hours: parseFloat(formData.hours),
 				notes: formData.notes || null
@@ -94,6 +97,7 @@ export function Dashboard()
 			setFormData({
 				userId: "",
 				projectId: "",
+				projectName: "",
 				workDate: new Date().toISOString().split("T")[0],
 				hours: "",
 				notes: ""
@@ -107,12 +111,12 @@ export function Dashboard()
 	};
 
 	const handleDeleteWorkLog = async (id: string) =>
-	{
-		if (!confirm("Are you sure you want to delete this entry?"))
-			return ;
-		
-		try
 		{
+			if (!confirm("Are you sure you want to delete this entry?"))
+				return ;
+			
+			try
+			{
 			await client.delete(`/api/workLogs/${id}`);
 			await fetchData();
 		}
@@ -154,7 +158,7 @@ export function Dashboard()
 								<tbody>
 									{workLogs.map((log) => (
 										<tr key={log.id} className="border-b border-gray-600 hover:border-gray-500">
-											<td className="py-3">{log.project?.name || "[Missing project name]"}</td>
+											<td className="py-3">{log.projectName || "[Missing project name]"}</td>
 											<td className="py-3">{log.username}</td>
 											<td className="py-3">{log.hours}h</td>
 											<td className="py-3">{log.notes || "-"}</td>
@@ -185,13 +189,19 @@ export function Dashboard()
 							<select
 								id="project_id"
 								value={formData.projectId}
-								onChange={(e) => setFormData({ ...formData, projectId: e.target.value })}
+								onChange={(e) =>
+									{
+										const projectId = e.target.value;
+										const projectName = projects.find((p) => p.id == projectId)?.name ?? "";
+										setFormData({ ...formData, projectId: projectId, projectName: projectName })
+									}
+								}
 								className="w-full px-3 py-2 text-gray-400 bg-gray-700 border border-gray-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								required
 							>
 								<option value="" className="bg-gray-700">Select a project</option>
 								{projects.map((project) => (
-									<option key={project.id} value={project.name} className="bg-gray-700">
+									<option key={project.id} value={project.id} className="bg-gray-700">
 										{project.name}
 									</option>
 								))}

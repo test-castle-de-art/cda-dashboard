@@ -13,6 +13,7 @@ const app = fastify({ logger: true });
 await app.register(cors, {
     origin: true, // change it in prod
     credentials: true,
+    methods: ["GET", "POST", "DELETE"]
 });
 
 await app.register(jwt, {
