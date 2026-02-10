@@ -5,7 +5,8 @@
     "moduleResolution": "bundler",
     "types": ["node"],
     "strict": true,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "./dist",
     "skipLibCheck": true
   },
   "include": ["server.ts", "server/**/*.ts"]

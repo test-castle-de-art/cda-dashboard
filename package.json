@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host",
     "dev:api": "tsx watch server.ts",
-    "build": "tsc -b && vite build",
+    "build": "npx esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js && vite build --outDir dist/src",
+    "vercel-build": "vite build",
+    "start": "node ./dist/server.js",
     "lint": "eslint .",
     "preview": "vite preview --host",
     "db:generate": "drizzle-kit generate",
@@ -16,6 +18,7 @@
   "dependencies": {
     "@fastify/cors": "^11.2.0",
     "@fastify/jwt": "^10.0.0",
+    "@fastify/static": "^9.0.0",
     "argon2": "^0.44.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
