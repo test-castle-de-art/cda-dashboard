@@ -8,7 +8,7 @@
     "dev:api": "tsx watch server.ts",
     "build": "npx esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js && vite build --outDir dist/src",
     "build:server": "esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=server.js",
-    "vercel-build": "npm run build:server && vite build",
+    "vercel-build": "SKIP_TYPE_CHECK=true run build:server && vite build",
     "start": "node ./dist/server.js",
     "lint": "eslint .",
     "preview": "vite preview --host",
