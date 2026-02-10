@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { User } from "../context/auth";
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.MODE == "development" ? "http://localhost:3000" : "";
 
 interface LoginResponse
 {
