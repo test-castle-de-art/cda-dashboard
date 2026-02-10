@@ -4,5 +4,12 @@
       "source": "/api/:path*",
       "destination": "/api"
     }
-  ]
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "includeFiles": "server/**",
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
 }
