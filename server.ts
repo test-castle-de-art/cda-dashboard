@@ -20,7 +20,9 @@ async function buildApp() {
     const app = fastify({ logger: true });
 
     await app.register(cors, {
-        origin: true, // change it in prod
+        origin: process.env.VERCEL_URL 
+            ? [`https://${process.env.VERCEL_URL}`, /\.vercel\.app$/]
+            : true,
         credentials: true,
         methods: ["GET", "POST", "DELETE"]
     });
