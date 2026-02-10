@@ -5,5 +5,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["./**/*.ts", "../server.ts", "../server/**/*.ts"]
+  "include": ["./**/*.ts", "../server.ts", "../server/**/*.ts", "index.js"]
 }

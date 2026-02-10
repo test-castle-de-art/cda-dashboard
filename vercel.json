@@ -6,7 +6,7 @@
     }
   ],
   "functions": {
-    "api/**/*.ts": {
+    "api/**/*.js": {
       "includeFiles": "server/**",
       "memory": 1024,
       "maxDuration": 10
