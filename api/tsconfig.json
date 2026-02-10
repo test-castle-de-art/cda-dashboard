@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.server.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "include": ["*.ts", "../server.ts", "../server/**/*.ts", "../shared/**/*.ts"]
+}

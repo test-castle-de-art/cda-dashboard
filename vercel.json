@@ -4,5 +4,6 @@
       "source": "/api/:path*",
       "destination": "/api"
     }
-  ]
+  ],
+  "buildCommand": "npm run vercel-build"
 }
