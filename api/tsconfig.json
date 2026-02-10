@@ -1,9 +1,0 @@
-{
-  "extends": "../tsconfig.server.json",
-  "compilerOptions": {
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "noEmit": true
-  },
-  "include": ["./**/*.ts", "../server.ts", "../server/**/*.ts", "index.js"]
-}
