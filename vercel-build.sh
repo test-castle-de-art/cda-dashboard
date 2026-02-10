@@ -3,7 +3,7 @@
 npm run vite build
 
 # Build server with YOUR tsconfig
-npx tsc -p tsconfig.server.json --noEmit false --outDir dist-server
+npx tsc -p tsconfig.server.json --noEmit false --outDir dist
 
 # Tell Vercel we're done
 echo "Build complete"
