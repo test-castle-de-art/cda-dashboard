@@ -1,22 +1,74 @@
 import "dotenv/config";
-import { buildApp } from "./server/app.js";
+import fastify from "fastify";
+import cors from "@fastify/cors";
+import jwt from "@fastify/jwt";
+import { env } from "./server/env";
+import { authRoutes } from "./server/routes/auth";
+import { userRoutes } from "./server/routes/users";
+import { projectRoutes } from "./server/routes/projects";
+import { workLogsRoutes } from "./server/routes/workLogs";
 
-// For local development
-const start = async () =>
+import path from "path";
+import { fileURLToPath } from "url";
+import fastifyStatic from "@fastify/static";
+
+const app = fastify({ logger: true });
+
+await app.register(cors, {
+    origin: process.env.VERCEL_URL
+        ? [`https://${process.env.VERCEL_URL}`, /\.vercel\.app$/]
+        : true,
+    credentials: true,
+    methods: ["GET", "POST", "DELETE"]
+});
+
+await app.register(jwt, {
+    secret: env.JWT_SECRET,
+});
+
+app.decorate("authenticate", async (request, reply) =>
 {
     try
     {
-        const app = await buildApp();
-        await app.listen({ port: Number(process.env.PORT) || 3000, host: "0.0.0.0" });
+        await request.jwtVerify();
     }
     catch (error)
     {
-        console.error(error);
-        process.exit(1);
+        reply.code(401).send({
+            message: "Unauthorized"
+        });
     }
-};
+});
 
-// Only start server if not in serverless mode
-if (process.env.VERCEL !== '1') {
-    start();
+app.get("/health", async (request, reply) =>
+{
+    reply.send({ status: "ok" });
+});
+
+await app.register(authRoutes);
+await app.register(userRoutes);
+await app.register(projectRoutes);
+await app.register(workLogsRoutes);
+
+// Only register static files and start server in local development
+if (process.env.VERCEL !== "1") {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    await app.register(fastifyStatic, {
+        root: path.join(__dirname, "./src"),
+        prefix: "/"
+    });
+
+    app.setNotFoundHandler((request, reply) => {
+        if (request.url.startsWith("/api")) {
+            return reply.code(404).send({ error: "Not found" });
+        }
+        return reply.sendFile("index.html");
+    });
+
+    const port = Number(process.env.PORT) || 3000;
+    await app.listen({ port, host: "0.0.0.0" });
 }
+
+export default app;
