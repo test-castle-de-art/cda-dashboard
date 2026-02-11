@@ -8,7 +8,7 @@
     "dev:api": "tsx watch server.ts",
     "build": "npx esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js && vite build --outDir dist/src",
     "vercel-build": "./vercel-build.sh",
-    "build:server": "npx esbuild server.ts --bundle --platform=node --format=esm --outfile=dist/server.js --external:pg* --external:drizzle-orm --external:@fastify/* --external:fastify* --external:argon2 --external:dotenv --external:zod",
+    "build:server": "npx esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
     "start": "node ./dist/server.js",
     "lint": "eslint .",
     "preview": "vite preview --host",
