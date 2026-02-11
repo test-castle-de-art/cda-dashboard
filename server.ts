@@ -67,8 +67,7 @@ if (process.env.VERCEL !== "1") {
         return reply.sendFile("index.html");
     });
 
-    const port = Number(process.env.PORT) || 3000;
-    await app.listen({ port, host: "0.0.0.0" });
+    await app.listen({ port: env.PORT, host: "0.0.0.0" });
 }
 
 export default app;
