@@ -1,3 +1,4 @@
+/// <reference path="./types.d.ts" />
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import app from "../dist/server.js";
 
